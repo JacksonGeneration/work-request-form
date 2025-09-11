@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Work Permit Form</title>
+<style>
+  .conditional { display: none; }
+</style>
+</head>
+<body>
+<form>
+  <label>Date of work to be performed:<br />
+    <input type="date" name="dateOfWork" required />
+  </label><br /><br />
+
+  <label>Time of work to be performed:<br />
+    <input type="time" name="timeOfWork" required />
+  </label><br /><br />
+
+  <label>Work Requested By:<br />
+    <input type="text" name="workRequestedBy" required />
+  </label><br /><br />
+
+  <label>Company:<br />
+    <input type="text" name="company" required />
+  </label><br /><br />
+
+  <label>Location Of Work:<br />
+    <input type="text" name="locationOfWork" required />
+  </label><br /><br />
+
+  <label>Affected Equipment:<br />
+    <input type="text" name="affectedEquipment" required />
+  </label><br /><br />
+
+  <label>Work Scope:<br />
+    <textarea name="workScope" rows="4" required></textarea>
+  </label><br /><br />
+
+  <label>Is LOTO Required?<br />
+    <select name="isLOTORequired" required>
+      <option value="">--Select--</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </label><br /><br />
+
+  <label>Is Confined Space Entry Required?<br />
+    <select name="isConfinedSpaceEntryRequired" id="confinedSpaceSelect" required>
+      <option value="">--Select--</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </label><br /><br />
+
+  <div id="spaceToBeEnteredDiv" class="conditional">
+    <label>Space to be entered:<br />
+      <input type="text" name="spaceToBeEntered" />
+    </label><br /><br />
+  </div>
+
+  <label>ID:<br />
+    <input type="text" name="id" required />
+  </label><br /><br />
+
+  <label>Is Hot Work Required (welding, cutting, grinding, open flame, sparks)?<br />
+    <select name="isHotWorkRequired" id="hotWorkSelect" required>
+      <option value="">--Select--</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </label><br /><br />
+
+  <div id="foremanNameDiv" class="conditional">
+    <label>Foreman Name:<br />
+      <input type="text" name="foremanName" />
+    </label><br /><br />
+  </div>
+
+  <div id="fireWatchNameDiv" class="conditional">
+    <label>Fire-watch Name:<br />
+      <input type="text" name="fireWatchName" />
+    </label><br /><br />
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  const hotWorkSelect = document.getElementById('hotWorkSelect');
+  const foremanNameDiv = document.getElementById('foremanNameDiv');
+  const fireWatchNameDiv = document.getElementById('fireWatchNameDiv');
+  const confinedSpaceSelect = document.getElementById('confinedSpaceSelect');
+  const spaceToBeEnteredDiv = document.getElementById('spaceToBeEnteredDiv');
+
+  hotWorkSelect.addEventListener('change', function() {
+    if (this.value === 'Yes') {
+      foremanNameDiv.style.display = 'block';
+      fireWatchNameDiv.style.display = 'block';
+    } else {
+      foremanNameDiv.style.display = 'none';
+      fireWatchNameDiv.style.display = 'none';
+    }
+  });
+
+  confinedSpaceSelect.addEventListener('change', function() {
+    if (this.value === 'Yes') {
+      spaceToBeEnteredDiv.style.display = 'block';
+    } else {
+      spaceToBeEnteredDiv.style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>
