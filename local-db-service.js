@@ -123,7 +123,6 @@ function getAllFormsFromIndexedDB(callback) {
 }
 
 function showFormDataPopup(data) {
-  console.log("processing data ", data);
 
   // Create overlay
   const overlay = document.createElement('div');
@@ -147,6 +146,18 @@ function showFormDataPopup(data) {
   closeButton.style.marginBottom = '15px';
   closeButton.onclick = () => document.body.removeChild(overlay);
   popup.appendChild(closeButton);
+
+  const message = "Table below displays ONLY previously submitted requests from CURRENT DEVICE and CURRENT BROWSER"
+
+  // Add message element
+  const messageElement = document.createElement('h2');
+  messageElement.textContent = message;
+  Object.assign(messageElement.style, {
+    marginBottom: '15px',
+    fontStyle: 'italic',
+    color: '#a83d3dff'
+  });
+  popup.appendChild(messageElement);
 
   // Create table
   const table = document.createElement('table');
@@ -302,4 +313,10 @@ function showMessage(message, durationMs = 3000, color = 'white') {
   // Remove after timeout
   const timeoutId = setTimeout(removeMessage, durationMs);
 }
+
+
+
+
+
+
 
