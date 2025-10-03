@@ -122,6 +122,77 @@ function getAllFormsFromIndexedDB(callback) {
   };
 }
 
+function getFormByIdFromIndexedDB(id, callback) {
+  const request = indexedDB.open('FormDatabase', 1);
+
+  request.onupgradeneeded = event => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains('forms')) {
+      db.createObjectStore('forms', { keyPath: 'id', autoIncrement: true });
+    }
+  };
+
+  request.onsuccess = event => {
+    const db = event.target.result;
+    const transaction = db.transaction(['forms'], 'readonly');
+    const store = transaction.objectStore('forms');
+    const getRequest = store.get(id);
+
+    getRequest.onsuccess = () => {
+      callback(getRequest.result || null);
+      db.close();
+    };
+
+    getRequest.onerror = () => {
+      console.error('Error fetching form by id:', getRequest.error);
+      callback(null);
+      db.close();
+    };
+  };
+
+  request.onerror = event => {
+    console.error('IndexedDB open error:', event.target.error);
+    callback(null);
+  };
+}
+
+
+function deleteFormFromIndexedDB(id, callback) {
+  const request = indexedDB.open('FormDatabase', 1);
+
+  request.onupgradeneeded = event => {
+    const db = event.target.result;
+    if (!db.objectStoreNames.contains('forms')) {
+      db.createObjectStore('forms', { keyPath: 'id', autoIncrement: true });
+    }
+  };
+
+  request.onsuccess = event => {
+    const db = event.target.result;
+    const transaction = db.transaction(['forms'], 'readwrite');
+    const store = transaction.objectStore('forms');
+    const deleteRequest = store.delete(id);
+
+    deleteRequest.onsuccess = () => {
+      console.log(`Form with id ${id} deleted successfully`);
+      callback(true);
+      db.close();
+    };
+
+    deleteRequest.onerror = () => {
+      console.error('Error deleting form:', deleteRequest.error);
+      callback(false);
+      db.close();
+    };
+  };
+
+  request.onerror = event => {
+    console.error('IndexedDB open error:', event.target.error);
+    callback(false);
+  };
+}
+
+
 function showFormDataPopup(data) {
 
   // Create overlay
@@ -182,6 +253,10 @@ function showFormDataPopup(data) {
     });
     headerRow.appendChild(th);
   });
+    
+    const th = document.createElement('th');
+    th.textContent = "Delete";
+    headerRow.appendChild(th);
   
   thead.appendChild(headerRow);
   table.appendChild(thead);
@@ -204,6 +279,24 @@ function showFormDataPopup(data) {
       Object.assign(td.style, { border: '1px solid #ccc', padding: '8px' });
       row.appendChild(td);
     });
+    const td = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.textContent = "Delete";
+    btn.style.backgroundColor = 'red';
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent row click event
+      deleteFormFromIndexedDB(formData.id, success => {
+        if (success) {
+          console.log('Form deleted.');
+          row.remove(); // Remove the row from the table
+        } else {
+          console.log('Failed to delete form.');
+        }
+      });
+    });
+
+    td.appendChild(btn);
+    row.appendChild(td);
     tbody.appendChild(row);
   });
 
