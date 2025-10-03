@@ -137,7 +137,7 @@ function showFormDataPopup(data) {
   const popup = document.createElement('div');
   Object.assign(popup.style, {
     background: '#fff', padding: '20px', borderRadius: '8px', maxHeight: '80vh',
-    overflowY: 'auto', minWidth: '600px', boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+    overflowY: 'auto', boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
   });
   overlay.appendChild(popup);
 
@@ -240,6 +240,7 @@ async function submitFormToPowerAutomate(data) {
     throw error;
   }
 }
+
 
 
 
