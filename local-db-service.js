@@ -228,20 +228,76 @@ async function submitFormToPowerAutomate(data) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+      showMessage("Failed to submit request, try again. If form is empty, it should be accessable in previously submitted froms list.", 7000)
     }
 
     const result = await response.json();
     console.log('Successfully submitted:', result);
+    showMessage("Successfully submitted", 2000)
     return result;
 
   } catch (error) {
     console.error('Error submitting form to Power Automate:', error);
-    throw error;
+    showMessage("Failed to submit request, try again. If form is empty, it should be accessable in previously submitted froms list.", 7000)
+    // throw error;
   }
 }
 
+function showMessage(message, durationMs = 3000, color = 'white') {
+  // Define muted colors and text colors
+  const colors = {
+    red: { bg: '#c75c5c', text: '#fff5f5' },       // muted dark red background
+    green: { bg: '#5c9575', text: '#f1fbf7' },     // muted dark green background
+    white: { bg: '#f5f5f5', text: '#333' },        // light gray background with dark text
+    yellow: { bg: '#d4c66d', text: '#2f2e18' }     // muted mustard yellow background
+  };
 
+  const chosen = colors[color.toLowerCase()] || colors.white;
 
+  // Create overlay
+  const overlay = document.createElement('div');
+  Object.assign(overlay.style, {
+    position: 'fixed',
+    top: 0, left: 0, width: '100%', height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10000,
+  });
 
+  // Create message box
+  const box = document.createElement('div');
+  box.textContent = message;
+  Object.assign(box.style, {
+    backgroundColor: chosen.bg,
+    color: chosen.text,
+    padding: '15px 25px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+    fontSize: '1.1rem',
+    maxWidth: '80%',
+    textAlign: 'center',
+    cursor: 'pointer',
+    userSelect: 'none'
+  });
 
+  // Append box to overlay, and overlay to body
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  // Function to remove popup safely
+  function removeMessage() {
+    if (overlay.parentNode) {
+      overlay.parentNode.removeChild(overlay);
+      clearTimeout(timeoutId);
+    }
+  }
+
+  // Remove on click
+  box.addEventListener('click', removeMessage);
+
+  // Remove after timeout
+  const timeoutId = setTimeout(removeMessage, durationMs);
+}
