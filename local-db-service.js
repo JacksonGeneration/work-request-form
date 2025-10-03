@@ -234,7 +234,8 @@ async function submitFormToPowerAutomate(data) {
 
     const result = await response.json();
     console.log('Successfully submitted:', result);
-    showMessage("Successfully submitted", 2000)
+    const message = result.message ?? "Failed to submit request, try again. If form is empty, it should be accessable in previously submitted froms list.";
+    showMessage(message, 2000)
     return result;
 
   } catch (error) {
@@ -301,3 +302,4 @@ function showMessage(message, durationMs = 3000, color = 'white') {
   // Remove after timeout
   const timeoutId = setTimeout(removeMessage, durationMs);
 }
+
