@@ -44,14 +44,24 @@ form.addEventListener('submit', (event) => {
 
 function saveFormToIndexedDB(form) {
   const data = {};
+  // Array.from(form.elements).forEach(el => {
+  //   if (!el.name) return;
+  //   if (el.type === 'radio') {
+  //     if (el.checked) data[el.name] = el.value;
+  //   } else if (el.type === 'checkbox') {
+  //     data[el.name] = el.checked;
+  //   } else {
+  //     data[el.name] = el.value;
+  //   }
+  // });
   Array.from(form.elements).forEach(el => {
     if (!el.name) return;
     if (el.type === 'radio') {
-      if (el.checked) data[el.name] = el.value;
+      if (el.checked) data[el.name] = sanitizeValue(el.value);
     } else if (el.type === 'checkbox') {
       data[el.name] = el.checked;
     } else {
-      data[el.name] = el.value;
+      data[el.name] = sanitizeValue(el.value);
     }
   });
 
@@ -86,6 +96,21 @@ function saveFormToIndexedDB(form) {
     console.error('IndexedDB error:', event.target.error);
   };
   return data;
+}
+
+function sanitizeValue(value) {
+  if (typeof value !== 'string') return value;
+  
+  // Trim whitespace
+  value = value.trim();
+  
+  // Check if the first character is not alphanumeric
+  if (value.length > 0 && !/^[a-zA-Z0-9]/.test(value)) {
+    // Prepend a single quote to prevent formula interpretation
+    return "'" + value;
+  }
+  
+  return value;
 }
 
 function getAllFormsFromIndexedDB(callback) {
@@ -406,6 +431,7 @@ function showMessage(message, durationMs = 3000, color = 'white') {
   // Remove after timeout
   const timeoutId = setTimeout(removeMessage, durationMs);
 }
+
 
 
 
